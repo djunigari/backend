@@ -1,0 +1,303 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Auth {
+  userId: String!
+}
+
+type AnnouncementInfo {
+  totalViews: Float!
+  totalClicks: Float!
+}
+
+type Announcement {
+  id: ID!
+  uid: String!
+  name: String!
+  imageUrl: String!
+  url: String
+  createdAt: DateTime!
+  announcementInfo: AnnouncementInfo
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Category {
+  name: String!
+  subCategories: [String!]
+}
+
+type ProfileResume {
+  uid: String!
+  imageUrl: String!
+  displayName: String
+}
+
+type Client {
+  userId: String!
+  likes: [ProfileResume!]
+  bookmarks: [ProfileResume!]
+  testimonials: [ProfileResume!]
+}
+
+type Post {
+  id: ID!
+  slug: String!
+  title: String!
+  content: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type ProfileAddress {
+  country: String
+  postCode: String
+  prefCode: String
+  prefName: String
+  cityCode: String
+  cityName: String
+  address1: String
+  address2: String
+}
+
+type ProfileBookmarks {
+  total: Float!
+  users: [String!]
+}
+
+type ProfileLikes {
+  total: Float!
+  users: [String!]
+}
+
+type ProfileInfo {
+  totalViews: Float!
+  likes: ProfileLikes!
+  bookmarks: ProfileBookmarks!
+}
+
+type Profile {
+  uid: ID!
+  linkName: String
+  typeProfile: String!
+  disabled: Boolean!
+  displayName: String
+  imageUrl: String
+  email: String
+  telephone: String
+  whatsapp: String
+  facebook: String
+  instagram: String
+  webSite: String
+  youtube: String
+  attendances: [String]
+  category: String
+  subCategory: String
+  services: [String!]
+  description: String
+  notesAndComments: String
+  profileInfo: ProfileInfo
+  address: ProfileAddress!
+  searchableFields: String
+}
+
+type City {
+  admAreaCode: String!
+  name: String
+  nameJP: String!
+  prefCode: String!
+}
+
+type Prefecture {
+  prefCode: String!
+  name: String
+  nameJP: String!
+}
+
+type PageInfo {
+  totalCount: Float!
+  startCursor: Float!
+  endCursor: Float!
+  take: Float!
+  skip: Float!
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+
+type Testimonial {
+  userId: String!
+  profileUid: String!
+  content: String!
+  status: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  userName: String
+}
+
+type PaginatedAnnouncements {
+  pageInfo: PageInfo!
+  list: [Announcement!]!
+}
+
+type PaginatedProfiles {
+  pageInfo: PageInfo!
+  list: [Profile!]!
+}
+
+type PaginatedTestimonial {
+  pageInfo: PageInfo!
+  list: [Testimonial!]!
+}
+
+type Query {
+  whoAmI: Auth!
+  isAdmin: String!
+  myProfile: Profile
+  profile(uid: ID!): Profile
+  randomProfiles(params: ParamsRandomProfileFilterInput, limit: Float = 10): [Profile!]!
+  searchProfiles(params: ParamsProfileFilterInput, take: Float = 10, skip: Float = 0, ip: String, isAdmin: Boolean = false): PaginatedProfiles!
+  category(name: String!): Category!
+  categories: [Category!]!
+  memoryUsed: String!
+  client: Client
+  testimonial(userId: String!, profileUid: String!): Testimonial
+  testimonials(profileUid: String, take: Float = 10, skip: Float = 0): PaginatedTestimonial!
+  clientTestimonials(take: Float = 10, skip: Float = 0): PaginatedTestimonial!
+  profileTestimonialsByStatus(status: String = "false", take: Float = 10, skip: Float = 0): PaginatedTestimonial!
+  announcement(id: ID!): Announcement
+  myAnnouncements(take: Float = 10, skip: Float = 0): PaginatedAnnouncements!
+  randomAnnouncements(params: ParamsRandomAnnouncementsFilterInput, limit: Float = 3): [Announcement!]
+  searchPrefecture(prefCode: String!): Prefecture
+  prefectures: [Prefecture!]!
+  searchCity(admAreaCode: String!): City
+  cities: [City!]!
+  citiesFromPrefecture(prefCode: String!): [City!]!
+  post(slug: String!): Post
+  searchPost(params: ParamsPostFilterInput, take: Float = 10, skip: Float = 0): PaginatedProfiles!
+}
+
+input ParamsRandomProfileFilterInput {
+  typeProfiles: [String!]
+  attendances: [String!]
+  category: String
+  subCategory: String
+  prefCode: String
+  cityCode: String
+}
+
+input ParamsProfileFilterInput {
+  uid: String
+  typeProfiles: [String!]
+  displayName: String
+  attendances: [String!]
+  category: String
+  subCategory: String
+  services: [String!]
+  prefCode: String
+  cityCode: String
+  query: String
+}
+
+input ParamsRandomAnnouncementsFilterInput {
+  prefectureCode: String
+  cityCode: String
+  category: String
+  subCategory: String
+}
+
+input ParamsPostFilterInput {
+  slug: String
+  title: String
+  content: String
+}
+
+type Mutation {
+  login: Auth!
+  grantAdminRole(email: String!): String!
+  firstAdmin: String!
+  changeUserName(name: String!): String!
+  changeUserImage(imageUrl: String!): String!
+  deleteAccount: String!
+  createPhoneCodeVerification(phoneNumber: String!, recaptchaToken: String!): String!
+  verifyPhoneCodeVerification(sessionInfo: String!, phoneNumber: String!, code: String!): String!
+  updateUserPhoneNumber(uid: String!, phoneNumber: String!): String!
+  createProfile(uid: String, typeProfile: String = "free", profileData: UpdateProfileDataInput!): Profile!
+  deleteProfile(uid: String!): String!
+  changeTypeProfile(uid: String, typeProfile: String = "free"): Profile!
+  updateProfileFromAdmin(uid: String!, profileData: UpdateProfileDataInput!): Profile!
+  saveProfileFromUser(profileData: UpdateProfileDataInput!): Profile!
+  addLike(uid: String!): String!
+  removeLike(uid: String!): String!
+  addBookmark(uid: String!): String!
+  removeBookmark(uid: String!): String!
+  updateCategoryName(name: String!, newName: String!): Category!
+  newCategory(name: String!, subCategories: [String!]): Category!
+  deleteCategory(name: String!): String!
+  updateSubCategoriesOfCategory(name: String!, subCategories: [String!]): Category!
+  addSubCategoriesToCategory(name: String!, subCategories: [String!]!): Category!
+  removeSubCategoriesToCategory(name: String!, subCategories: [String!]!): Category!
+  createClient: Client!
+  saveTestimonial(profileUid: String!, content: String!): Testimonial!
+  removeTestimonial(profileUid: String!): String!
+  changeTestimonialStatus(userId: String!, status: String!): Testimonial!
+  createAnnouncement(imageUrl: String!, url: String, name: String!): Announcement!
+  updateAnnouncement(id: ID!, url: String, name: String): Announcement!
+  removeAnnouncement(id: ID!): String!
+  addPrefecture(data: NewPrefectureInput!): Prefecture!
+  addPrefectures(data: [NewPrefectureInput!]!): [Prefecture!]!
+  updatePrefectureName(name: String!, prefCode: String!): Prefecture!
+  addCity(data: NewCityInput!): City!
+  addCities(data: [NewCityInput!]!): [City!]!
+  updateCityName(name: String!, admAreaCode: String!): City!
+  updateCitiesName(data: [UpdateCityNameInput!]!): [City!]!
+  createPost(slug: String!, title: String!, content: String!): Post!
+  updatePost(id: String!, slug: String!, title: String!, content: String!): Post!
+  deletePost(id: String!): String!
+}
+
+input UpdateProfileDataInput {
+  typeProfile: String
+  displayName: String
+  imageUrl: String
+  email: String
+  telephone: String
+  whatsapp: String
+  facebook: String
+  instagram: String
+  webSite: String
+  youtube: String
+  attendances: [String!]
+  category: String
+  subCategory: String
+  services: [String!]
+  description: String
+  notesAndComments: String
+  country: String
+  postCode: String
+  prefCode: String
+  cityCode: String
+  address1: String
+  address2: String
+}
+
+input NewPrefectureInput {
+  name: String
+  nameJP: String!
+  prefCode: String!
+}
+
+input NewCityInput {
+  name: String
+  nameJP: String!
+  prefCode: String!
+  admAreaCode: String!
+}
+
+input UpdateCityNameInput {
+  name: String!
+  admAreaCode: String!
+}
